@@ -57,24 +57,49 @@ const userController = {
     getDashboard: async(req,res) =>{
         try{
             const auth0Id = req.oidc.user.sub;
-            const user = await User
+            const user = await User.findOne({auth0Id});
 
-        }catch{
+            if (!user){
+                return res.status(404).json({ success: false, error: 'User not found' });
+            }
+
+            //user stats
+            const totalCommunities = user.communities.length;
+            const totalReviews = await Review.countDocuments({ reviewee: user._id });
+
+            res.json({
+                success: true,
+                stats: {
+                    totalpoints: user.points,
+                    totalCommunities,
+                    totalReviews,
+                    skills: user.skills
+                }
+
+            });
+
+        }catch(error){
+            res.status(500).json({ success: false, error: error.message });
+        }
+    },
+
+
+    //Get leaderboard
+
+    getLeaderboard: async(req,res) =>{
+        try{
+            const users = await User.find()
+              .sort({ points: -1 })
+              .limit(10)
+              .select('name points skills')
+              .exec();
+
+              res.json({ success: true, users });
+
+        }
+        catch(error){
+            res.status(500).json({ success: false, error: error.message });
 
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 };
