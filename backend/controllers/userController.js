@@ -1,5 +1,5 @@
 const User = require ('../model/user');
-const Community = require('../model/community');
+
 
 
 const userController = {
@@ -103,3 +103,4 @@ const userController = {
         }
     }
 };
+module.exports = userController;
