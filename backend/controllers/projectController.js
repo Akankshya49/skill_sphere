@@ -157,6 +157,38 @@ const projectController ={
 
     },
 
+    // update the project status
+    updateProjectStatus: async(req,res)=>{
+        try{
+            const auth0Id = req.oidc.user.sub;
+            const {projectId} = req.params;
+            const {status} = req.body;
+            const user = await User.findOne({auth0Id});
+            if (!user){
+                return res. status(404).json({success:false, error:'User not found'});  }
+
+            const project = await Project.findById(projectId);
+            if (!project){
+                return res.status(404).json({success.false, error:"Project not found"});
+            }
+            //only project lead can update
+            if (project.postedBy.toString() !== user._id.toString()) {
+        return res.status(403).json({ success: false, error: 'Only project owner can update status' });
+      }
+
+      project.status = status;
+      await project.save();
+
+      res.json({ success: true, message: 'Project status updated successfully' });
+    } catch (error) {
+      res.status(500).json({ success: false, error: error.message });
+    }
+  }
+};
+
+module.exports = projectController;
+
+
     
 
 
