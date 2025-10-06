@@ -126,7 +126,7 @@ const projectController ={
 
             const project = await Project.findById(projectId);
             if (!project){
-                return res.status(404).json({success.false, error:"Project not found"});
+                return res.status(404).json({success:false, error:"Project not found"});
             }
 
             // check if user is already a collaborator
@@ -169,7 +169,7 @@ const projectController ={
 
             const project = await Project.findById(projectId);
             if (!project){
-                return res.status(404).json({success.false, error:"Project not found"});
+                return res.status(404).json({success:false, error:"Project not found"});
             }
             //only project lead can update
             if (project.postedBy.toString() !== user._id.toString()) {
@@ -187,38 +187,3 @@ const projectController ={
 };
 
 module.exports = projectController;
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-}
