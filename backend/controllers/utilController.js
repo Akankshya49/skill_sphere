@@ -187,6 +187,71 @@ const utilController = {
     } catch (error) {
       res.status(500).json({ success: false, error: error.message });
     }
+  },
+  // Get user recommendations based on similar skills/interests
+  getUserRecommendations: async (req, res) => {
+    try {
+      const auth0Id = req.oidc.user.sub;
+      
+      const user = await User.findOne({ auth0Id });
+      if (!user) {
+        return res.status(404).json({ success: false, error: 'User not found' });
+      }
+
+      if (!user.skills || user.skills.length === 0) {
+        return res.json({
+          success: true,
+          recommendations: {
+            communities: [],
+            users: [],
+            projects: []
+          },
+          message: 'Add skills to get personalized recommendations'
+        });
+      }
+
+      // Find communities with similar tags/focus
+      const recommendedCommunities = await Community.find({
+        tags: { $in: user.skills },
+        members: { $not: { $elemMatch: { user: user._id } } }, // Not already a member
+        isPublic: true
+      })
+      .populate('createdBy', 'name')
+      .limit(5)
+      .exec();
+
+      // Find users with similar skills (potential collaborators)
+      const similarUsers = await User.find({
+        _id: { $ne: user._id },
+        skills: { $in: user.skills }
+      })
+      .select('name skills points')
+      .limit(5)
+      .exec();
+
+      // Find relevant projects
+      const relevantProjects = await Project.find({
+        techStack: { $in: user.skills },
+        status: 'Open',
+        'collaborators.user': { $ne: user._id }
+      })
+      .populate('postedBy', 'name')
+      .populate('community', 'name')
+      .limit(5)
+      .exec();
+
+      res.json({
+        success: true,
+        recommendations: {
+          communities: recommendedCommunities,
+          users: similarUsers,
+          projects: relevantProjects
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ success: false, error: error.message });
+    }
   }
+
 };
 module.exports = utilController;
