@@ -7,6 +7,7 @@ const { config } = require("./config/auth0");
 const {errorHandler} = require("./middleware/errorHandler");
 const{rateLimits} = require("./middleware/Rate limiting");
 
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -33,6 +34,7 @@ app.use('/api/communities', require('./routes/communities'));
 app.use('/api/projects', require('./routes/projects'));
 app.use('/api/reviews', require('./routes/review'));
 app.use('/api/utils', require('./routes/utils'));
+app.use('/api/meetings', require('./routes/meetings'));
 
 
 // Health check endpoint
@@ -54,6 +56,7 @@ app.get('/', (req, res) => {
       users: '/api/user',
       communities: '/api/communities',
       projects: '/api/projects',
+      meetings: '/api/meetings',
       reviews: '/api/reviews',
       utils: '/api/utils'
     },
