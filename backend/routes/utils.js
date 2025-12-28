@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const { requiresAuth } = require('express-openid-connect');
-const { utilController } = require('../controllers');
-const { ensureUserExists, rateLimits } = require('../middleware');
+const utilController = require('../controllers/utilController');
+const { ensureUserExists } = require('../middleware/auth');
+const rateLimits = require('../middleware/Rate limiting');
 
 // Public routes
 router.get('/search', rateLimits.search, utilController.globalSearch);

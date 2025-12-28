@@ -1,13 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { requiresAuth } = require('express-openid-connect');
-const { communityController } = require('../controllers');
-const { 
-  ensureUserExists, 
-  validateInput, 
-  validationRules, 
-  rateLimits, 
-} = require('../middleware');
+const communityController = require('../controllers/communityController');
+const { ensureUserExists } = require('../middleware/auth');
+const { validateInput, validationRules } = require('../middleware/validation');
+const rateLimits = require('../middleware/Rate limiting');
 
 // Public routes
 router.get('/', rateLimits.general, communityController.getCommunities);

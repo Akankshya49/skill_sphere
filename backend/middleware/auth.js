@@ -1,4 +1,4 @@
-const User = require('../models/user');
+const User = require('../model/user');
 
 // Middleware to ensure user exists in database
 const ensureUserExists = async (req, res, next) => {

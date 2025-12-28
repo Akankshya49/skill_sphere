@@ -1,13 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { requiresAuth } = require('express-openid-connect');
-const { projectController } = require('../controllers');
-const { 
-  ensureUserExists, 
-  validateInput, 
-  validationRules, 
-  rateLimits 
-} = require('../middleware');
+const projectController = require('../controllers/projectController');
+const { ensureUserExists } = require('../middleware/auth');
+const { validateInput, validationRules } = require('../middleware/validation');
+const rateLimits = require('../middleware/Rate limiting');
 
 // Public routes
 router.get('/', rateLimits.general, projectController.getProjects);
@@ -19,14 +16,14 @@ router.post('/',
   ensureUserExists,
   rateLimits.create,
   validateInput(validationRules.createProject),
-  projectController.createProject
+  projectController.createproject
 );
 
 router.post('/:projectId/join', 
   requiresAuth(), 
   ensureUserExists,
   rateLimits.general,
-  projectController.joinProject
+  projectController.joinproject
 );
 
 router.put('/:projectId/status', 

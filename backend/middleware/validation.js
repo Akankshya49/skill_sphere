@@ -108,3 +108,8 @@ const validationRules = {
     skills: { isArray: true }
   }
 };
+
+module.exports = {
+  validateInput,
+  validationRules
+};

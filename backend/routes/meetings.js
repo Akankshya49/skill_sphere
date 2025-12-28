@@ -1,20 +1,17 @@
 const express = require('express');
 const router = express.Router();
 const { requiresAuth } = require('express-openid-connect');
-const { meetingController } = require('../controllers');
-const { 
-  ensureUserExists, 
-  validateInput, 
-  validationRules, 
-  rateLimits 
-} = require('../middleware');
+const meetingController = require('../controllers/meetingController');
+const { ensureUserExists } = require('../middleware/auth');
+const { validateInput, validationRules } = require('../middleware/validation');
+const rateLimits = require('../middleware/Rate limiting');
 
 // Protected routes (meetings are community-specific)
 router.get('/community/:communityId', 
   requiresAuth(), 
   ensureUserExists,
   rateLimits.general,
-  meetingController.getMeetings
+  meetingController.getmeetings
 );
 
 router.get('/:meetingId', 

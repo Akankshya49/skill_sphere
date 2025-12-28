@@ -1,13 +1,10 @@
 const express = require ('express');
 const router = express.Router();
 const { requiresAuth } = require('express-openid-connect');
-const {reviewController} = require('../controllers');
-const {
-    ensureUserExists,
-    validateInput,
-    validationRules,
-    rateLimits
-}  = require('../middleware');
+const reviewController = require('../controllers/reviewController');
+const { ensureUserExists } = require('../middleware/auth');
+const { validateInput, validationRules } = require('../middleware/validation');
+const rateLimits = require('../middleware/Rate limiting');
 
 // public route 
 router.get('/user/:userId',rateLimits.general , reviewController.getUserReviews);

@@ -1,4 +1,4 @@
-const User = require('../models/user');
+const User = require('../model/user');
 const Meeting = require('../model/meeting');
 const Community = require('../model/community');
 const Project = require('../model/project');
